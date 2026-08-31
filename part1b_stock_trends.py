@@ -12,11 +12,10 @@ import pandas as pd
 PRICES_CSV = "stock_prices.csv"
 COMPANIES_CSV = "saas_companies_enriched.csv"
 OUTPUT_CSV = "stock_analytics.csv"
-
 TRADING_DAYS_PER_YEAR = 252
 
 
-def nearest_row_on_or_before(group: pd.DataFrame, target_date: pd.Timestamp) -> pd.Series:
+def nearest_row_on_or_before(group: pd.DataFrame, target_date: pd.Timestamp):
     """Given a ticker's price history (sorted by trade_date) and a target date,
     return the row with the latest trade_date <= target_date, or None if no
     such row exists (i.e. history doesn't go back that far)."""
@@ -26,7 +25,7 @@ def nearest_row_on_or_before(group: pd.DataFrame, target_date: pd.Timestamp) -> 
     return eligible.iloc[-1]
 
 
-def compute_metrics_for_ticker(ticker: str, group: pd.DataFrame) -> dict:
+def compute_metrics_for_ticker(ticker: str, group: pd.DataFrame):
     group = group.sort_values("trade_date").reset_index(drop=True)
 
     latest = group.iloc[-1]
@@ -78,13 +77,12 @@ def main():
 
     analytics = pd.DataFrame(rows)
 
-    # Attach company context (name, industry, product) for readability/insights
     companies = pd.read_csv(COMPANIES_CSV)[
         ["Company Name", "Ticker", "Industry", "Product", "Valuation"]
     ].rename(columns={"Company Name": "company_name", "Ticker": "ticker",
                        "Industry": "industry", "Product": "product",
                        "Valuation": "last_known_valuation"})
-    analytics = companies.merge(analytics, on="ticker", how="inner")  # inner: only companies we computed data for
+    analytics = companies.merge(analytics, on="ticker", how="inner")
 
     analytics = analytics.sort_values("current_market_cap", ascending=False)
     analytics.to_csv(OUTPUT_CSV, index=False)

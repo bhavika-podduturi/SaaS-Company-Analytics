@@ -19,18 +19,14 @@ INTERVAL = "1d"        # daily stock prices
 # understate/overstate history for companies with heavy buybacks, secondary
 # offerings, or stock-based comp dilution during the window
 
-# A few tickers changed during the lookback window. If a pull
+# A few tickers changed during in the past three years. If a pull
 # comes back empty, try the alternate symbol listed here.
 TICKER_ALIASES = {
     "GTM": ["GTM", "ZI"],     # ZoomInfo: ZI -> GTM (2025)
     "XYZ": ["XYZ", "SQ"],     # Block: SQ -> XYZ (2025)
 }
 
-# Some formerly-public companies were taken private or acquired during the
-# past 3 years (Splunk, HashiCorp, Vimeo, etc.). Their tickers are delisted,
-# so Yahoo Finance will return no data for them
-
-def fetch_shares_outstanding(ticker: str) -> dict:
+def fetch_shares_outstanding(ticker: str):
     symbols_to_try = TICKER_ALIASES.get(ticker, [ticker])
     for sym in symbols_to_try:
         try:
@@ -44,7 +40,7 @@ def fetch_shares_outstanding(ticker: str) -> dict:
     return {"ticker": ticker, "shares_outstanding": None, "source_symbol": None}
 
 
-def fetch_one(ticker: str) -> pd.DataFrame:
+def fetch_price_history(ticker: str):
     symbols_to_try = TICKER_ALIASES.get(ticker, [ticker])
     for sym in symbols_to_try:
         try:
@@ -54,7 +50,7 @@ def fetch_one(ticker: str) -> pd.DataFrame:
             continue
         if not hist.empty:
             hist = hist.reset_index()
-            hist["ticker"] = ticker  # keep the current ticker as the key
+            hist["ticker"] = ticker
             return hist
     return pd.DataFrame()
 
@@ -70,7 +66,7 @@ def main():
     for i, ticker in enumerate(tickers, 1):
         print(f"[{i}/{len(tickers)}] {ticker}")
 
-        hist = fetch_one(ticker)
+        hist = fetch_price_history(ticker)
         if hist.empty:
             print(f"  -> no price data returned (may be too recently listed, or delisted)")
         else:
@@ -81,9 +77,8 @@ def main():
             print(f"  -> no shares outstanding found")
         shares_rows.append(shares_info)
 
-        time.sleep(0.3)  # be polite to the API
+        time.sleep(0.3)
 
-    # ---- shares outstanding table ----
     shares_df = pd.DataFrame(shares_rows)
     shares_df.to_csv(SHARES_CSV, index=False)
     print(f"\nWrote shares outstanding for {shares_df['shares_outstanding'].notna().sum()} "
@@ -105,8 +100,6 @@ def main():
     })
     combined["trade_date"] = pd.to_datetime(combined["trade_date"]).dt.date
 
-    # Merge in shares outstanding and compute an approximate market cap series
-    # (close price x current shares outstanding -- see note above).
     combined = combined.merge(
         shares_df[["ticker", "shares_outstanding"]], on="ticker", how="left"
     )
