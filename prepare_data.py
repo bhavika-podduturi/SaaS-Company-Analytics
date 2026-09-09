@@ -1,34 +1,5 @@
 """
-Part 2 data prep: gets the raw dataset ready for SQL analysis. Does three
-things SQL is bad at, so we do them once in Python:
-
-1. Parses currency-string columns (Total Funding, ARR -- e.g. "$1B", "$65.4M")
-   into plain numeric USD columns. (Valuation is intentionally NOT parsed here
-   -- see note below.)
-2. Buckets the 85 raw Industry values into 12 broader sector groups, so
-   industry-level SQL aggregates aren't mostly single-company groups.
-3. Splits the comma-separated Top Investors column into a normalized
-   company_investors junction table (one row per company-investor pair), so
-   SQL can GROUP BY investor cleanly.
-
-WHY Valuation ISN'T PARSED TO NUMERIC HERE: the raw Valuation column mixes
-current private valuations with old acquisition prices (e.g. "$27.7B
-(Salesforce)"), and at least one case (Figma) is outright stale -- it shows
-a $20B Adobe acquisition price from a deal that fell through in 2022, even
-though Figma has since IPO'd independently. For public companies, Part 1's
-stock_analytics.current_market_cap (calculated from live price data) is a
-far more reliable valuation figure. Total Funding, by contrast, checks out
-fine on inspection (one placeholder outlier: Oracle's "$2K"), so it's kept.
-
-No internet needed -- pure pandas, runs anywhere, including offline.
-
-Inputs:  saas_companies_enriched.csv
-Outputs: saas_companies_clean.csv   (original columns + total_funding_usd,
-                                      arr_usd, industry_bucket)
-         company_investors.csv      (company_name, investor_name)
-
-Usage:
-    python prepare_part2_data.py
+Data Preparation: Gets the raw dataset ready for SQL analysis, which is done in part 2.
 """
 import pandas as pd
 import re
@@ -37,14 +8,12 @@ INPUT_CSV = "saas_companies_enriched.csv"
 COMPANIES_OUTPUT_CSV = "saas_companies_clean.csv"
 INVESTORS_OUTPUT_CSV = "company_investors.csv"
 
-# Matches "$1B", "$65.4M", "$3T", "$2K" -- the optional "(...)" suffix some
-# Valuation values carry is simply not captured by this pattern.
+# Normalize currency columns from strings to plain numeric USD columns (e.g. standardizes "$1B", "$65.4M", etc)
 CURRENCY_PATTERN = re.compile(r"^\$([\d,.]+)\s*([KMBT])?")
 SCALE = {"K": 1_000, "M": 1_000_000, "B": 1_000_000_000, "T": 1_000_000_000_000, None: 1}
 
-# Maps each of the 85 raw Industry values onto one of 12 broader sector
-# buckets, so industry-level SQL aggregates reflect meaningful groups rather
-# than mostly single-company categories.
+# Bucket the 85 raw Industry values into 12 broader sector groups, 
+# so industry-level SQL aggregates reflect meaningful groups rather than mostly single-company categories
 INDUSTRY_BUCKETS = {
     # Cybersecurity & Identity
     "Cloud Security": "Cybersecurity & Identity", "Cybersecurity": "Cybersecurity & Identity",
@@ -104,7 +73,6 @@ INDUSTRY_BUCKETS = {
     "Enterprise Software": "Enterprise Software / ERP", "Database & Enterprise": "Enterprise Software / ERP",
 }
 
-
 def parse_currency(value):
     """'$65.4M' -> 65_400_000.0. Returns None for missing/unparseable values."""
     if pd.isna(value):
@@ -120,7 +88,8 @@ def parse_currency(value):
 def main():
     df = pd.read_csv(INPUT_CSV)
 
-    # ---- 1. Currency columns -> numeric (Total Funding + ARR only) ----
+    # 1. Parse currency columns aside from the Valuation column. 
+    # A different approach is developed for calculating a company's valuation/market cap in Part 1.
     df["total_funding_usd"] = df["Total Funding"].apply(parse_currency)
     df["arr_usd"] = df["ARR"].apply(parse_currency)
 
@@ -129,14 +98,14 @@ def main():
         print(f"WARNING: {len(unparsed)} Total Funding values didn't parse:")
         print(unparsed[["Company Name", "Total Funding"]])
 
-    # Known placeholder value, not a real funding figure -- Oracle IPO'd in
-    # 1977, well before modern VC-funding tracking existed.
+    # Filtering out Oracle's funding figure. Oracle's Total Funding is $2K, 
+    # which is a placeholder in the source data since the company IPO'd in 1986.
     oracle_mask = (df["Company Name"] == "Oracle") & (df["total_funding_usd"] < 1_000_000)
     if oracle_mask.any():
         df.loc[oracle_mask, "total_funding_usd"] = None
         print("Note: nulled out Oracle's Total Funding ('$2K') as a placeholder value.")
 
-    # ---- 2. Industry bucketing ----
+    # 2. Industry bucketing
     df["industry_bucket"] = df["Industry"].map(INDUSTRY_BUCKETS)
     unmapped = df[df["industry_bucket"].isna()]
     if not unmapped.empty:
@@ -150,14 +119,16 @@ def main():
     print(f"  - industry_bucket populated for {df['industry_bucket'].notna().sum()}/{len(df)} "
           f"({df['industry_bucket'].nunique()} buckets)")
 
-    # ---- 2. Top Investors -> junction table ----
+    # 3. Splits the comma-separated Top Investors column into a 
+    # normalized company_investors junction table (one row per company-investor pair), 
+    # so SQL can GROUP BY investor cleanly.
     investor_rows = []
     for _, row in df.iterrows():
         if pd.isna(row["Top Investors"]):
             continue
         investors = [name.strip() for name in row["Top Investors"].split(",")]
         for investor in investors:
-            if investor:  # guard against stray empty strings from trailing commas
+            if investor:
                 investor_rows.append({
                     "company_name": row["Company Name"],
                     "investor_name": investor,
