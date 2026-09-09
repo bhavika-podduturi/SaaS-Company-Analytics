@@ -1,0 +1,217 @@
+company_name,investor_name
+Microsoft,Bill Gates
+Microsoft,Paul Allen
+Salesforce,Halsey Minor
+Salesforce,Larry Ellison
+Adobe,Hambrecht & Quist
+Oracle,Larry Ellison
+Oracle,Bob Miner
+SAP,Dietmar Hopp
+SAP,Klaus Tschira
+Intuit,Sierra Ventures
+Intuit,Kleiner Perkins
+ServiceNow,JMI Equity
+ServiceNow,Sequoia Capital
+Workday,Greylock Partners
+Workday,NEA
+Zoom,Sequoia Capital
+Zoom,Emergence
+Shopify,Bessemer
+Shopify,FirstMark
+Shopify,Felicis
+Atlassian,Accel Partners
+Snowflake,Sequoia
+Snowflake,ICONIQ
+Snowflake,Altimeter
+HubSpot,General Catalyst
+HubSpot,Google Ventures
+DocuSign,Kleiner Perkins
+DocuSign,Accel
+Slack,Accel
+Slack,Andreessen Horowitz
+Notion,Index Ventures
+Notion,Sequoia
+Datadog,ICONIQ
+Datadog,Index Ventures
+MongoDB,Sequoia
+MongoDB,NEA
+MongoDB,USV
+Okta,Andreessen Horowitz
+Okta,Greylock
+Twilio,Bessemer
+Twilio,Union Square
+Stripe,Sequoia
+Stripe,Andreessen Horowitz
+Square,Khosla Ventures
+Square,Sequoia
+Palantir,Founders Fund
+Palantir,In-Q-Tel
+Canva,Sequoia
+Canva,Bessemer
+Canva,Bond
+Monday.com,Sapphire Ventures
+Monday.com,Insight
+Asana,Benchmark
+Asana,Founders Fund
+Airtable,Benchmark
+Airtable,Thrive Capital
+Figma,Index Ventures
+Figma,Greylock
+GitLab,ICONIQ
+GitLab,Goldman Sachs
+Zendesk,Benchmark
+Zendesk,Matrix Partners
+Box,DFJ
+Box,NEA
+Box,Bessemer
+Dropbox,Sequoia
+Dropbox,Accel
+Dropbox,Index
+Freshworks,Accel
+Freshworks,Sequoia Capital India
+Klaviyo,Summit Partners
+Klaviyo,Accel
+UiPath,Sequoia
+UiPath,Accel
+UiPath,IVP
+Databricks,Andreessen Horowitz
+Databricks,NEA
+Confluent,Sequoia
+Confluent,Benchmark
+Confluent,Index
+HashiCorp,GV
+HashiCorp,Mayfield
+HashiCorp,IVP
+Elastic,NEA
+Elastic,Benchmark
+Elastic,Index
+PagerDuty,Andreessen Horowitz
+PagerDuty,Bessemer
+New Relic,Benchmark
+New Relic,Trinity
+New Relic,Tenaya
+Splunk,August Capital
+Splunk,JK&B Capital
+Cloudflare,NEA
+Cloudflare,Venrock
+Cloudflare,Union Square
+SendGrid,Bessemer
+SendGrid,Foundry Group
+Mailchimp,Bootstrapped
+Miro,ICONIQ
+Miro,Accel
+Miro,GV
+Grammarly,General Catalyst
+Grammarly,IVP
+Calendly,OpenView
+Calendly,ICONIQ
+Intercom,Kleiner Perkins
+Intercom,Bessemer
+Segment,Accel
+Segment,GV
+Segment,Kleiner Perkins
+Auth0,Bessemer
+Auth0,Sapphire
+Looker,CapitalG
+Looker,Kleiner Perkins
+Amplitude,Sequoia
+Amplitude,IVP
+Amplitude,Battery
+Mixpanel,Andreessen Horowitz
+Mixpanel,Sequoia
+Sumo Logic,Accel
+Sumo Logic,DFJ
+Sumo Logic,Greylock
+Zscaler,TPG
+Zscaler,Lightspeed
+CrowdStrike,Warburg Pincus
+CrowdStrike,Accel
+Palo Alto Networks,Sequoia
+Palo Alto Networks,Greylock
+RingCentral,Sequoia
+RingCentral,Khosla
+RingCentral,Scale
+Five9,Adams Street
+Five9,Partech
+Veeva Systems,Emergence Capital
+Coupa,Battery
+Coupa,Crosslink
+Bill.com,Bank of America
+Bill.com,TPG
+Zoom Info,TA Associates
+Zoom Info,Carlyle
+Smartsheet,Insight Partners
+Smartsheet,Madrona
+Qualtrics,Sequoia
+Qualtrics,Accel
+Qualtrics,Insight
+Wix,Benchmark
+Wix,Bessemer
+Toast,TCV
+Toast,Tiger Global
+Gong,Sequoia
+Gong,Coatue
+Gong,Thrive
+Outreach,Lone Pine
+Outreach,Meritech
+Outreach,Spark
+Salesloft,Insight Partners
+Salesloft,HarbourVest
+Braze,Spark Capital
+Braze,NEA
+LaunchDarkly,Bessemer
+LaunchDarkly,Redpoint
+Gusto,General Catalyst
+Gusto,CapitalG
+Rippling,Founders Fund
+Rippling,Greenoaks
+Carta,Andreessen Horowitz
+Carta,Lightspeed
+Plaid,NEA
+Plaid,Spark Capital
+Marqeta,ICONIQ
+Marqeta,Goldman Sachs
+Affirm,Founders Fund
+Affirm,Lightspeed
+Ramp,Thrive Capital
+Ramp,Founders Fund
+Brex,DST Global
+Brex,Ribbit Capital
+Navan,Andreessen Horowitz
+Navan,Addition
+Benchling,Altimeter
+Benchling,Lux Capital
+Celonis,Arena Holdings
+Celonis,Durable Capital
+Redis,Tiger Global
+Redis,Softbank
+Algolia,Accel
+Algolia,Salesforce Ventures
+Samsara,Andreessen Horowitz
+Samsara,Tiger
+Verkada,Sequoia
+Verkada,Felicis
+JFrog,Insight Partners
+JFrog,Qumra
+Netskope,Sequoia
+Netskope,Lightspeed
+OneTrust,Generation IM
+OneTrust,Insight
+Tanium,Andreessen Horowitz
+Tanium,IVP
+Rubrik,Lightspeed
+Rubrik,Greylock
+AppDynamics,Lightspeed
+AppDynamics,Greylock
+Snyk,Tiger Global
+Snyk,Accel
+CircleCI,IVP
+CircleCI,DFJ Growth
+ServiceTitan,Tiger Global
+ServiceTitan,Sequoia
+Procore,Bessemer
+Procore,Tiger Global
+Automattic,Salesforce Ventures
+Automattic,Insight
+Vimeo,Thrive Capital
+Vimeo,IAC
