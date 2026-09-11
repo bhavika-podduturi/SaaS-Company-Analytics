@@ -1,9 +1,4 @@
--- ============================================================
--- SaaS Companies Analytics Project — Database Schema
--- Works in SQLite, and ports easily to Postgres/MySQL if you
--- move the project there later (just swap AUTOINCREMENT / TEXT
--- types as needed).
--- ============================================================
+-- Database Schema: Creates 4 SQL tables that will be loaded with the data from the previous scripts
 
 DROP TABLE IF EXISTS stock_analytics;
 DROP TABLE IF EXISTS stock_prices;
@@ -15,26 +10,24 @@ CREATE TABLE companies (
     company_name    TEXT NOT NULL UNIQUE,
     founded_year    INTEGER,
     hq              TEXT,
-    industry        TEXT,      -- raw source value (85 distinct, mostly 1-2 companies each)
-    industry_bucket TEXT,      -- 12 broader sector groupings, added by prepare_part2_data.py -- use this for GROUP BY
-    total_funding   TEXT,      -- original string, e.g. "$1B" -- kept for display/reference
-    arr             TEXT,
-    valuation       TEXT,      -- original string; NOT parsed to numeric -- see prepare_part2_data.py note on why.
-                                -- For public companies, use stock_analytics.current_market_cap instead.
-    total_funding_usd REAL,    -- numeric USD, parsed by prepare_part2_data.py (Oracle's placeholder "$2K" nulled out)
+    industry        TEXT,      -- raw source value (85 distinct industries)
+    industry_bucket TEXT,      -- 12 broader sector groupings
+    total_funding   TEXT,      -- original string, e.g. "$1B"
+    arr             TEXT,    
+    valuation       TEXT,      -- original string (not parsed); for public companies, use stock_analytics.current_market_cap instead
+    total_funding_usd REAL,    -- numeric USD 
     arr_usd            REAL,
     employees       TEXT,
-    top_investors   TEXT,      -- original comma-separated string -- see company_investors for normalized form
+    top_investors   TEXT,      -- original comma-separated string
     product         TEXT,
     g2_rating       REAL,
     ticker          TEXT,      -- NULL for private companies
-    exchange        TEXT,      -- NASDAQ / NYSE / NULL
+    exchange        TEXT,
     status          TEXT CHECK (status IN ('Public','Private')),
     notes           TEXT
 );
 
--- Part 2 prep output: one row per (company, investor) pair, normalized from
--- the comma-separated Top Investors column. Populated by prepare_part2_data.py.
+-- Prepare_data output: one row per (company, investor) pair, normalized from the comma-separated Top Investors column
 CREATE TABLE company_investors (
     company_name    TEXT NOT NULL,
     investor_name   TEXT NOT NULL,
@@ -51,13 +44,12 @@ CREATE TABLE stock_prices (
     close           REAL,
     adj_close       REAL,
     volume          INTEGER,
-    shares_outstanding INTEGER,   -- current snapshot, held constant across the series (see pull_stock_history.py note)
+    shares_outstanding INTEGER,   
     market_cap      REAL,         -- close * shares_outstanding
     UNIQUE(ticker, trade_date)
 );
 
--- Part 1 output: one row per public company with enough price history to
--- compute TSR / CAGR. Populated by calculate_tsr_market_cap.py.
+-- Part 1 output: one row per public company with enough price history to compute TSR / CAGR
 CREATE TABLE stock_analytics (
     ticker              TEXT PRIMARY KEY,
     company_name        TEXT NOT NULL,

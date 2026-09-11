@@ -1,15 +1,5 @@
 """
 Part 2: Product/Industry Group Metrics & Investor Prevalence
-
-Same pattern as portfolio_optimization.py's SQL usage: write each query as a
-plain string, run it with pd.read_sql(), get a DataFrame back.
-
-Uses saas_companies.db (built by load_to_sqlite.py). Run this AFTER
-load_to_sqlite.py has loaded the data -- these queries read from the
-database, they don't load anything.
-
-Usage:
-    python part2_analysis.py
 """
 import sqlite3
 import pandas as pd
@@ -21,9 +11,8 @@ DB_PATH = "saas_companies.db"
 conn = sqlite3.connect(DB_PATH)
 
 
-# ------------------------------------------------------------
-# Q1. Revenue (ARR) by industry bucket, highest first
-# ------------------------------------------------------------
+# Q1. Revenue (ARR) by industry bucket in descending order
+
 q1_arr_by_industry = """
 SELECT
     industry_bucket,
@@ -37,10 +26,7 @@ GROUP BY industry_bucket
 ORDER BY total_arr_usd DESC;
 """
 
-# ------------------------------------------------------------
-# Q2. Revenue (ARR) by product bundle, highest first
-# (Product is per-company free text, not a shared category)
-# ------------------------------------------------------------
+# Q2. Revenue (ARR) by product bundle in descending order
 q2_arr_by_product = """
 SELECT
     product,
@@ -53,10 +39,7 @@ GROUP BY product
 ORDER BY total_arr_usd DESC;
 """
 
-# ------------------------------------------------------------
-# Q3. Total funding raised by industry bucket, highest first
-# (Oracle's placeholder "$2K" funding value was nulled out in prep)
-# ------------------------------------------------------------
+# Q3. Total funding raised by industry bucket in descending order
 q3_funding_by_industry = """
 SELECT
     industry_bucket,
@@ -69,10 +52,8 @@ GROUP BY industry_bucket
 ORDER BY total_funding_usd DESC;
 """
 
-# ------------------------------------------------------------
 # Q4. Current market cap by industry bucket (public companies only) --
 # uses Part 1's calculated market cap, not the static Valuation column
-# ------------------------------------------------------------
 q4_market_cap_by_industry = """
 SELECT
     c.industry_bucket,
@@ -86,9 +67,7 @@ GROUP BY c.industry_bucket
 ORDER BY total_market_cap_usd DESC;
 """
 
-# ------------------------------------------------------------
 # Q5. Market-cap-to-ARR multiple by company, public companies only
-# ------------------------------------------------------------
 q5_market_cap_to_arr = """
 SELECT
     c.company_name,
@@ -102,10 +81,7 @@ WHERE c.arr_usd IS NOT NULL
 ORDER BY market_cap_to_arr_multiple DESC;
 """
 
-# ------------------------------------------------------------
-# Q6. Investor prevalence: which investors show up in the most
-# portfolio companies overall
-# ------------------------------------------------------------
+# Q6. Investor prevalence: which investors show up in the most portfolio companies overall
 q6_top_investors = """
 SELECT
     investor_name,
@@ -116,10 +92,7 @@ ORDER BY portfolio_company_count DESC
 LIMIT 20;
 """
 
-# ------------------------------------------------------------
-# Q7. Investor prevalence by industry bucket: for each sector, which
-# investors appear more than once
-# ------------------------------------------------------------
+# Q7. Investor prevalence by industry bucket: for each sector, which investors appear more than once
 q7_investors_by_industry = """
 SELECT
     c.industry_bucket,
@@ -132,10 +105,8 @@ HAVING COUNT(*) > 1
 ORDER BY companies_backed_in_bucket DESC, c.industry_bucket;
 """
 
-# ------------------------------------------------------------
 # Q8. For a specific investor, which sectors do they concentrate in?
 # Swap INVESTOR_OF_INTEREST below to look at a different investor.
-# ------------------------------------------------------------
 INVESTOR_OF_INTEREST = "Sequoia"
 q8_investor_sector_focus = """
 SELECT
@@ -150,9 +121,7 @@ GROUP BY ci.investor_name, c.industry_bucket
 ORDER BY company_count DESC;
 """
 
-# ------------------------------------------------------------
 # Q9. Average ARR of companies each investor has backed
-# ------------------------------------------------------------
 q9_investor_avg_arr = """
 SELECT
     ci.investor_name,
@@ -166,9 +135,7 @@ HAVING COUNT(*) >= 3
 ORDER BY avg_portfolio_arr_billions DESC;
 """
 
-# ------------------------------------------------------------
 # Q10. Public vs. private: ARR comparison
-# ------------------------------------------------------------
 q10_public_vs_private = """
 SELECT
     status,
