@@ -14,15 +14,21 @@ COMPANIES_CSV = "saas_companies_enriched.csv"
 OUTPUT_CSV = "stock_analytics.csv"
 TRADING_DAYS_PER_YEAR = 252
 
+MAX_GAP_DAYS = 14
 
 def nearest_row_on_or_before(group: pd.DataFrame, target_date: pd.Timestamp):
     """Given a ticker's price history (sorted by trade_date) and a target date,
     return the row with the latest trade_date <= target_date, or None if no
-    such row exists (i.e. history doesn't go back that far)."""
+    such row exists (i.e. history doesn't go back that far).
+    If history starts slightly after target_date (within max_gap_days), 
+    use the first row instead."""
     eligible = group[group["trade_date"] <= target_date]
-    if eligible.empty:
-        return None
-    return eligible.iloc[-1]
+    if not eligible.empty:
+        return eligible.iloc[-1]
+    first = group.iloc[0]
+    if (first["trade_date"] - target_date).days <= MAX_GAP_DAYS:
+        return first
+    return None
 
 
 def compute_metrics_for_ticker(ticker: str, group: pd.DataFrame):
@@ -39,7 +45,7 @@ def compute_metrics_for_ticker(ticker: str, group: pd.DataFrame):
         "ticker": ticker,
         "as_of_date": latest_date.date(),
         "years_of_data": round(years_of_data, 2),
-        "has_3y_history": years_of_data >= 2.95,  # small buffer for weekends/holidays at pull time
+        "has_3y_history": row_3y_ago is not None,
         "current_price": latest["close"],
         "shares_outstanding": latest["shares_outstanding"],
         "current_market_cap": latest["market_cap"],

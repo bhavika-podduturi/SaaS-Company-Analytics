@@ -44,7 +44,14 @@ and left blank for companies with less than 3 years of trading history (recent I
 
 ## Tableau Dashboard (Planned)
 
---
+**Live dashboard:** [SaaS Company Analytics on Tableau Public](https://public.tableau.com/views/SaaSCompanyAnalytics/Dashboard1?:language=en-US&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link)
+The dashboard allows users to filter by industry bucket (all industries, or one or more buckets) to look at four measures: ARR, 3-year TSR, 3-year market cap CAGR, and 3-year stock price performance
+
+The first tab has summary statistics that display total ARR, median 3-year TSR, and median 3-year market cap CAGR for the selected industry buckets, each shown with the number of companies behind it (n). Bar charts display ARR, 3-year TSR, and 3-year market cap CAGR for each company in the selection, sorted high to low.
+
+The second tab displays stock price performance over a period of three years. 
+
+Data sources: saas_companies_clean.csv and stock_analytics.csv, connected in Tableau with a relationship on ticker.
 
 ## Technologies Used
 
